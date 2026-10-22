@@ -1,5 +1,5 @@
 import urllib
-from flask import Flask, request
+from flask import Flask, request, render_template
 import datetime
 import prometheus_client
 
@@ -16,4 +16,4 @@ def catch_all(path):
 
     fallback_counter.labels(domain=str(url.hostname)).inc()
 
-    return 'You want path: %s' % path
+    return render_template("index.html")
