@@ -1,5 +1,5 @@
 import urllib
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, Response
 import datetime
 import prometheus_client
 
@@ -8,12 +8,14 @@ prometheus_client.start_http_server(8000)
 
 app = Flask(__name__)
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>') #catch-all router
-def catch_all(path):
+@app.before_request
+def capture_fallback():
     url = urllib.parse.urlparse(request.base_url)
     print(f"{datetime.datetime.now(datetime.UTC)} | served domain {str(url.hostname)}, path was {str(url.path)}")
 
     fallback_counter.labels(domain=str(url.hostname)).inc()
 
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>') #catch-all router
+def catch_all(path):
     return render_template("index.html")
