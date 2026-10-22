@@ -4,7 +4,6 @@ import datetime
 import prometheus_client
 
 fallback_counter = prometheus_client.Counter("fallbacks_handled","The number of requests this fallback handler has handled, labeled by domain",["domain"])
-prometheus_client.start_http_server(8000)
 
 app = Flask(__name__)
 
@@ -14,6 +13,10 @@ def capture_fallback():
     print(f"{datetime.datetime.now(datetime.UTC)} | served domain {str(url.hostname)}, path was {str(url.path)}")
 
     fallback_counter.labels(domain=str(url.hostname)).inc()
+
+@app.route("/metrics")
+def show_metrics():
+    return Response(prometheus_client.generate_latest(),mimetype=prometheus_client.CONTENT_TYPE_LATEST)
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>') #catch-all router
