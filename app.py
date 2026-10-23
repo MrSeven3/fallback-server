@@ -17,7 +17,8 @@ def capture_fallback():
     url = urllib.parse.urlparse(request.base_url)
     print(f"{datetime.datetime.now(datetime.UTC)} | served domain {str(url.hostname)}, path was {str(url.path)}")
 
-    fallback_counter.labels(domain=str(url.hostname)).inc()
+    if not (url.hostname == allowed_metrics_domain and url.path == "/metrics"):
+        fallback_counter.labels(domain=str(url.hostname)).inc()
 
 @app.route("/metrics")
 def show_metrics():
