@@ -31,4 +31,4 @@ def show_metrics():
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>') #catch-all router
 def catch_all(path):
-    return render_template("index.html")
+    return render_template("index.html"), 404
