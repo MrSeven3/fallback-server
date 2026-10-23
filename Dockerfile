@@ -11,4 +11,4 @@ RUN uv sync --frozen
 
 COPY . .
 
-CMD ["uv", "run", "uwsgi", "--http", "0.0.0.0:8000", "--wsgi-file", "app.py", "--callable", "app"]
+CMD ["uv", "run", "uwsgi", "--http", "0.0.0.0:8000", "--wsgi-file", "app.py", "--callable", "app", "--buffer-size", "32768"]
